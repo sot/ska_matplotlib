@@ -1,12 +1,13 @@
 """Provide useful utilities for matplotlib."""
 
 
-import pylab
 import datetime
+from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
                               date2num, DateFormatter)
 import Chandra.Time
+import numpy
 
 # Default tick locator and format specification for making nice time axes
 TICKLOCS = ((YearLocator, {'base': 5}, '%Y',    YearLocator, {'base': 1}),
@@ -89,6 +90,30 @@ def set_time_ticks(plt, ticklocs=None):
 
     return ((majorLoc, major_kwargs, major_fmt, minorLoc, minor_kwargs), )
 
+def plot_cxctime(times, y, fig=None, **kwargs):
+    """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
+    value is supplied then the current figure will be used (and created
+    automatically if needed).  Any additional keyword arguments
+    (e.g. ``fmt='b-'``) are passed through to the ``plot_date()`` function.
+
+    :param times: CXC time values for x-axis (date)
+    :param y: y values
+    :param fig: pyplot figure object (optional)
+    :param **kwargs: keyword args passed through to ``plot_date()``
+
+    :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
+    """
+    if fig is None:
+        fig = pyplot.gcf()
+
+    ax = fig.gca()
+    ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+    ticklocs = set_time_ticks(ax)
+    fig.autofmt_xdate()
+    fig.show()
+
+    return ticklocs, fig, ax
+
 def cxctime2plotdate(times):
     """
     Convert input CXC time (sec) to the time base required for the matplotlib
@@ -105,6 +130,31 @@ def cxctime2plotdate(times):
 
     return [(x - times[0]) / 86400. + plotdate0 for x in times]
 
+def pointpair(x, y=None):
+    """Interleave and then flatten two arrays ``x`` and ``y``.  This is
+    typically useful for making a histogram style plot where ``x`` and ``y``
+    are the bin start and stop respectively.  If no value for ``y`` is provided then
+    ``x`` is used.
+
+    Example::
+
+      from Ska.Matplotlib import pointpair
+      x = numpy.arange(1, 100, 5)
+      x0 = x[:-1]
+      x1 = x[1:]
+      y = numpy.random.uniform(len(x0))
+      xpp = pointpair(x0, x1)
+      ypp = pointpair(y)
+      plot(xpp, ypp)
+
+    :x: left edge value of point pairs
+    :y: right edge value of point pairs (optional)
+    :rtype: numpy.array of length 2*len(x) == 2*len(y)
+    """
+    if y is None:
+        y = x
+    return numpy.array([x, y]).reshape(-1, order='F')
+
 def _check_many_sizes():
     """Run through a multiplicative series of x-axis lengths and visually confirm that
     chosen axes are OK."""
@@ -119,8 +169,8 @@ def _check_many_sizes():
         x = cxctime2plotdate(times)
         y = numpy.random.normal(size=len(times))
 
-        pylab.clf()
-        fig = pylab.figure(1)
+        fig = pyplot.figure(1)
+        fig.clf()
         plt1 = fig.add_subplot(1, 1, 1)
         plt1.plot_date(x, y, fmt='b-')
 
