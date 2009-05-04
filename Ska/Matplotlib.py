@@ -49,7 +49,7 @@ TICKLOCS = ((YearLocator, {'base': 5}, '%Y',    YearLocator, {'base': 1}),
             (SecondLocator, {}, '%H:%M:%S', SecondLocator, {}),
             )
 
-def set_time_ticks(plt, ticklocs=None):
+def set_time_ticks(plt, ticklocs=None, biggest=False):
     """
     Pick nice values to show time ticks in a date plot.
 
@@ -85,11 +85,22 @@ def set_time_ticks(plt, ticklocs=None):
         plt.xaxis.set_major_formatter(DateFormatter(major_fmt))
 
         majorticklocs = plt.xaxis.get_ticklocs()
-        if len(majorticklocs) >= 5:
+        if len(majorticklocs) >= 5 or biggest:
             break
 
     return ((majorLoc, major_kwargs, major_fmt, minorLoc, minor_kwargs), )
 
+def remake_ticks(event):
+    """Remake the date ticks for the current plot if space is pressed.  If '0'
+    is pressed then set the date ticks to the maximum possible range.
+    """
+    if event.key in (' ', '0'):
+        fig = event.canvas.figure
+        ax = fig.gca()
+        biggest = event.key == '0'
+        ticklocs = set_time_ticks(ax, biggest=biggest)
+        fig.show()
+    
 def plot_cxctime(times, y, fig=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
     value is supplied then the current figure will be used (and created
@@ -111,6 +122,7 @@ def plot_cxctime(times, y, fig=None, **kwargs):
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
     fig.show()
+    cid = fig.canvas.mpl_connect('key_release_event', remake_ticks)
 
     return ticklocs, fig, ax
 
