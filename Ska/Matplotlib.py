@@ -1,6 +1,6 @@
 """Provide useful utilities for matplotlib."""
 
-
+import warnings
 import datetime
 from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
@@ -101,7 +101,7 @@ def remake_ticks(event):
         ticklocs = set_time_ticks(ax, biggest=biggest)
         fig.show()
     
-def plot_cxctime(times, y, fig=None, **kwargs):
+def plot_cxctime(times, y, fmt='-b', fig=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
     value is supplied then the current figure will be used (and created
     automatically if needed).  Any additional keyword arguments
@@ -109,20 +109,33 @@ def plot_cxctime(times, y, fig=None, **kwargs):
 
     :param times: CXC time values for x-axis (date)
     :param y: y values
+    :param fmt: plot format (default = '-b')
     :param fig: pyplot figure object (optional)
     :param **kwargs: keyword args passed through to ``plot_date()``
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
+
+    # Version 0.03 took 'fig' as the third argument.  Check for this and
+    # issue deprecation warning.  Now the optional 3rd arg is format (which
+    # follows the convention for plot()).
+    if hasattr(fmt, 'gca'):
+        warnings.warn('Fig argument must be passed by keyword now', DeprecationWarning, stacklevel=2)
+        fig = fmt
+        fmt = '-b'
+
     if fig is None:
         fig = pyplot.gcf()
 
     ax = fig.gca()
-    ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+    ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
-    fig.show()
-    cid = fig.canvas.mpl_connect('key_release_event', remake_ticks)
+
+    # If plotting interactively then show the figure and enable interactive resizing
+    if hasattr(fig, 'show'):
+        fig.show()
+        cid = fig.canvas.mpl_connect('key_release_event', remake_ticks)
 
     return ticklocs, fig, ax
 
