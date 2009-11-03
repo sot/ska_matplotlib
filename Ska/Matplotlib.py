@@ -153,7 +153,11 @@ def cxctime2plotdate(times):
     datetime0 = datetime.datetime(*(t0.mxDateTime.tuple()[:7]))
     plotdate0 = date2num(datetime0)
 
-    return [(x - times[0]) / 86400. + plotdate0 for x in times]
+    try:
+        return (times - times[0]) / 86400. + plotdate0
+    except TypeError:
+        return (numpy.array(times) - times[0]) / 86400. + plotdate0
+        
 
 def pointpair(x, y=None):
     """Interleave and then flatten two arrays ``x`` and ``y``.  This is
