@@ -101,7 +101,7 @@ def remake_ticks(event):
         ticklocs = set_time_ticks(ax, biggest=biggest)
         fig.show()
     
-def plot_cxctime(times, y, fmt='-b', fig=None, **kwargs):
+def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
     value is supplied then the current figure will be used (and created
     automatically if needed).  Any additional keyword arguments
@@ -127,7 +127,8 @@ def plot_cxctime(times, y, fmt='-b', fig=None, **kwargs):
     if fig is None:
         fig = pyplot.gcf()
 
-    ax = fig.gca()
+    if ax is None:
+        ax = fig.gca()
     ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
