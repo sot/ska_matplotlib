@@ -2,7 +2,7 @@
 
 import numpy as np
 from matplotlib import pylab
-from Ska.Matplotlib import histOutline
+from Ska.Matplotlib import hist_outline
 
 if __name__ == "__main__":
     binsIn = np.arange(0, 1, 0.1)
@@ -15,9 +15,9 @@ if __name__ == "__main__":
 
     pylab.subplot(122)
 
-    (bins, data) = histOutline(angle, binsIn)
+    (bins, data) = hist_outline(angle, binsIn)
     pylab.plot(bins, data, 'k-', linewidth=2)
-    pylab.title("histOutline Demo")
+    pylab.title("hist_outline Demo")
     pylab.show()
 
 

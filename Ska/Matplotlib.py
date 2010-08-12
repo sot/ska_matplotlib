@@ -188,9 +188,9 @@ def pointpair(x, y=None):
 
 
 
-def histOutline(dataIn, *args, **kwargs):
+def hist_outline(dataIn, *args, **kwargs):
     """
-    code from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms
+    histOutline from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms
 
     Make a histogram that can be plotted with plot() so that
     the histogram just has the outline rather than bars as it
