@@ -185,6 +185,49 @@ def pointpair(x, y=None):
         y = x
     return numpy.array([x, y]).reshape(-1, order='F')
 
+
+
+
+def histOutline(dataIn, *args, **kwargs):
+    """
+    code from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms
+
+    Make a histogram that can be plotted with plot() so that
+    the histogram just has the outline rather than bars as it
+    usually does.
+
+    Example Usage:
+    binsIn = numpy.arange(0, 1, 0.1)
+    angle = pylab.rand(50)
+
+    (bins, data) = histOutline(binsIn, angle)
+    plot(bins, data, 'k-', linewidth=2)
+
+    """
+
+    (histIn, binsIn) = numpy.histogram(dataIn, *args, **kwargs)
+
+    stepSize = binsIn[1] - binsIn[0]
+
+    bins = numpy.zeros(len(binsIn)*2 + 2, dtype=numpy.float)
+    data = numpy.zeros(len(binsIn)*2 + 2, dtype=numpy.float)    
+    for bb in range(len(binsIn)):
+        bins[2*bb + 1] = binsIn[bb]
+        bins[2*bb + 2] = binsIn[bb] + stepSize
+        if bb < len(histIn):
+            data[2*bb + 1] = histIn[bb]
+            data[2*bb + 2] = histIn[bb]
+
+    bins[0] = bins[1]
+    bins[-1] = bins[-2]
+    data[0] = 0
+    data[-1] = 0
+    
+    return (bins, data)
+
+
+
+
 def _check_many_sizes():
     """Run through a multiplicative series of x-axis lengths and visually confirm that
     chosen axes are OK."""
