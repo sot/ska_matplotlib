@@ -101,35 +101,39 @@ def remake_ticks(event):
         ticklocs = set_time_ticks(ax, biggest=biggest)
         fig.show()
     
-def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, **kwargs):
+def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
     value is supplied then the current figure will be used (and created
-    automatically if needed).  Any additional keyword arguments
-    (e.g. ``fmt='b-'``) are passed through to the ``plot_date()`` function.
+    automatically if needed).  If yerr or xerr is supplied, ``errorbar()`` will be
+    called and any additional keyword arguments will be passed to it.  Otherwise
+    any additional keyword arguments (e.g. ``fmt='b-'``) are passed through to
+    the ``plot()`` function.  Also see ``errorbar()`` for an explanation of the possible
+    forms of *yerr*/*xerr*.
+
 
     :param times: CXC time values for x-axis (date)
     :param y: y values
     :param fmt: plot format (default = '-b')
     :param fig: pyplot figure object (optional)
-    :param **kwargs: keyword args passed through to ``plot_date()``
+    :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ] 
+    :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
+    :param tz: timezone string
+    :param **kwargs: keyword args passed through to ``plot_date()`` or ``errorbar()``
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
-
-    # Version 0.03 took 'fig' as the third argument.  Check for this and
-    # issue deprecation warning.  Now the optional 3rd arg is format (which
-    # follows the convention for plot()).
-    if hasattr(fmt, 'gca'):
-        warnings.warn('Fig argument must be passed by keyword now', DeprecationWarning, stacklevel=2)
-        fig = fmt
-        fmt = '-b'
 
     if fig is None:
         fig = pyplot.gcf()
 
     if ax is None:
         ax = fig.gca()
-    ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
+
+    if yerr is not None or xerr is not None:
+        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, fmt=fmt, **kwargs)
+    else:
+        ax.plot(cxctime2plotdate(times), y, fmt, **kwargs)
+    ax.xaxis_date(tz)
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
 
