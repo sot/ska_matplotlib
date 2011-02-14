@@ -131,9 +131,9 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     if yerr is not None or xerr is not None:
         ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, fmt=fmt, **kwargs)
+        ax.xaxis_date(tz)
     else:
-        ax.plot(cxctime2plotdate(times), y, fmt, **kwargs)
-    ax.xaxis_date(tz)
+        ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
 
