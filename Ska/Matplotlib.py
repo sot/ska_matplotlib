@@ -189,9 +189,6 @@ def pointpair(x, y=None):
         y = x
     return numpy.array([x, y]).reshape(-1, order='F')
 
-
-
-
 def hist_outline(dataIn, *args, **kwargs):
     """
     histOutline from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms
@@ -229,9 +226,6 @@ def hist_outline(dataIn, *args, **kwargs):
     
     return (bins, data)
 
-
-
-
 def _check_many_sizes():
     """Run through a multiplicative series of x-axis lengths and visually confirm that
     chosen axes are OK."""
@@ -260,5 +254,63 @@ def _check_many_sizes():
         if dt > 1e9:
             break
         
+# Define global dict holding all state values for each MSID, e.g.
+# {"AOPCADMD": ["STBY", "NULL", "RMAN", "PWRF", "NSUN", "NPNT", "NMAN"],
+#  "AOPEASEL": ["A", "B"],
+#   ...}
+msid_states = {}  
+
+def get_msid_states(msid):
+    """Get the states for ``msid``.  Read in the states value from the TDB file
+    if needed for the first such request.
+    """
+    msid = msid.upper()
+
+    # Read in MSID states if needed
+    if not msid_states:
+        # The file shown below is on the HEAD network and is very old.  Maybe
+        # you have a more recent version.  For development stub this with a
+        # local copy in your directory.
+        tsc_filename = '/proj/sot/ska/ops/TDB/tsc.txt'
+        with open(tsc_filename, 'r') as lines:
+            for line in lines:
+                vals = line.strip().split(",")
+                msid = vals[0].strip('"')
+                state = vals[-1].rstrip(';').strip('"')
+                states = msid_states.set_default(msid, [])
+                states.append(state)
+        
+    try:
+        return msid_states[msid]
+    except KeyError:
+        raise ValueError('No state values for MSID "{}" available'.format(msid))
+
+def plot_states(times, vals, msid=None, states=None, *args, **kwargs):
+    """Plot time history for an ``msid`` that has state values, e.g. AOPCADMD.
+    Convert state values to an integer representation in the order they appear
+    in the TDB tsc file.  If a list of ``states`` (state values) is supplied
+    then those will be used to translate from the string states to the integer
+    representation.  Otherwise an ``msid`` must be provided and the state
+    values from the TDB will be used.
+
+    Any extra positional or keyword arguments are passed on to ``plot_cxctime()``.
+
+    :param times: CXC time values for x-axis (date)
+    :param vals: values to plot (NumPy string array)
+    :param msid: MSID (default = None)
+    :param states: list of state values
+    """
+    if states is None:
+        if msid is None:
+            raise ValueError('At least one of "msid" or "states" must be provided')
+        states = get_msid_states(msid)
+    int_vals = np.zeros(len(vals), dtype='int')
+    for i, state in enumerate(states):
+        ok = (vals == state)
+        int_vals[ok] = i + 1  # NOTE: any plot values of 0 imply unknown state
+    plot_cxctime(times, int_vals, *args, **kwargs)
+
+    # Make a legend (this is an exercise for the reader!)
+
 if __name__ == '__main__':
     _check_many_sizes()
