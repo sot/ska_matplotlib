@@ -277,7 +277,7 @@ def get_msid_states(msid):
                 vals = line.strip().split(",")
                 msid = vals[0].strip('"')
                 state = vals[-1].rstrip(';').strip('"')
-                states = msid_states.set_default(msid, [])
+                states = msid_states.setdefault(msid, [])
                 states.append(state)
         
     try:
