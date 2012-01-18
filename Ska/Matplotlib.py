@@ -99,7 +99,7 @@ def remake_ticks(event):
         ax = fig.gca()
         biggest = event.key == '0'
         ticklocs = set_time_ticks(ax, biggest=biggest)
-        fig.show()
+        fig.canvas.draw()
     
 def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
@@ -139,7 +139,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     # If plotting interactively then show the figure and enable interactive resizing
     if hasattr(fig, 'show'):
-        fig.show()
+        fig.canvas.draw()
         cid = fig.canvas.mpl_connect('key_release_event', remake_ticks)
 
     return ticklocs, fig, ax
@@ -237,7 +237,9 @@ def _check_many_sizes():
     chosen axes are OK."""
     import numpy 
     import time
+    import matplotlib.pyplot as pyplot
 
+    pyplot.ion()
     dt = 6.
     while True:
         print dt
@@ -254,8 +256,9 @@ def _check_many_sizes():
         locs = set_time_ticks(plt1)
 
         fig.autofmt_xdate()
+        fig.canvas.draw_idle()
         fig.show()
-        time.sleep(0.5)
+        pyplot.show(block=True)
         dt *= 1.1
         if dt > 1e9:
             break
