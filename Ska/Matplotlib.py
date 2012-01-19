@@ -5,9 +5,9 @@ import datetime
 from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
-                              date2num, DateFormatter)
+                              DateFormatter, epoch2num)
 import Chandra.Time
-import numpy
+import numpy as np
 
 # Default tick locator and format specification for making nice time axes
 TICKLOCS = ((YearLocator, {'base': 5}, '%Y',    YearLocator, {'base': 1}),
@@ -49,14 +49,14 @@ TICKLOCS = ((YearLocator, {'base': 5}, '%Y',    YearLocator, {'base': 1}),
             (SecondLocator, {}, '%H:%M:%S', SecondLocator, {}),
             )
 
-def set_time_ticks(plt, ticklocs=None, biggest=False):
+def set_time_ticks(plt, ticklocs=None):
     """
     Pick nice values to show time ticks in a date plot.
 
     Example::
     
-      x = cxctime2plotdate(numpy.linspace(0, 3e7, 20))
-      y = numpy.random.normal(size=len(x))
+      x = cxctime2plotdate(np.linspace(0, 3e7, 20))
+      y = np.random.normal(size=len(x))
 
       fig = pylab.figure()
       plt = fig.add_subplot(1, 1, 1)
@@ -75,7 +75,6 @@ def set_time_ticks(plt, ticklocs=None, biggest=False):
     :param ticklocs: list of major/minor tick locators ala the default ``TICKLOCS``
     :rtype: tuple with selected ticklocs as first element
     """
-    # def make_outputs(opt, states, times, T_pin, T_dea):
 
     locs = ticklocs or TICKLOCS
 
@@ -85,21 +84,17 @@ def set_time_ticks(plt, ticklocs=None, biggest=False):
         plt.xaxis.set_major_formatter(DateFormatter(major_fmt))
 
         majorticklocs = plt.xaxis.get_ticklocs()
-        if len(majorticklocs) >= 5 or biggest:
+        if len(majorticklocs) >= 5:
             break
 
     return ((majorLoc, major_kwargs, major_fmt, minorLoc, minor_kwargs), )
 
-def remake_ticks(event):
+def remake_ticks(ax):
     """Remake the date ticks for the current plot if space is pressed.  If '0'
     is pressed then set the date ticks to the maximum possible range.
     """
-    if event.key in (' ', '0'):
-        fig = event.canvas.figure
-        ax = fig.gca()
-        biggest = event.key == '0'
-        ticklocs = set_time_ticks(ax, biggest=biggest)
-        fig.canvas.draw()
+    ticklocs = set_time_ticks(ax)
+    ax.figure.canvas.draw()
     
 def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
@@ -140,9 +135,10 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     # If plotting interactively then show the figure and enable interactive resizing
     if hasattr(fig, 'show'):
         fig.canvas.draw()
-        cid = fig.canvas.mpl_connect('key_release_event', remake_ticks)
+        ax.callbacks.connect('xlim_changed', remake_ticks)
 
     return ticklocs, fig, ax
+
 
 def cxctime2plotdate(times):
     """
@@ -154,14 +150,10 @@ def cxctime2plotdate(times):
     """
     
     # Find the plotdate of first time and use a relative offset from there
-    t0 = Chandra.Time.DateTime(times[0])
-    datetime0 = datetime.datetime(*(t0.mxDateTime.tuple()[:7]))
-    plotdate0 = date2num(datetime0)
+    t0 = Chandra.Time.DateTime(times[0]).unix
+    plotdate0 = epoch2num(t0)
 
-    try:
-        return (times - times[0]) / 86400. + plotdate0
-    except TypeError:
-        return (numpy.array(times) - times[0]) / 86400. + plotdate0
+    return (np.asarray(times) - times[0]) / 86400. + plotdate0
         
 
 def pointpair(x, y=None):
@@ -173,21 +165,21 @@ def pointpair(x, y=None):
     Example::
 
       from Ska.Matplotlib import pointpair
-      x = numpy.arange(1, 100, 5)
+      x = np.arange(1, 100, 5)
       x0 = x[:-1]
       x1 = x[1:]
-      y = numpy.random.uniform(len(x0))
+      y = np.random.uniform(len(x0))
       xpp = pointpair(x0, x1)
       ypp = pointpair(y)
       plot(xpp, ypp)
 
     :x: left edge value of point pairs
     :y: right edge value of point pairs (optional)
-    :rtype: numpy.array of length 2*len(x) == 2*len(y)
+    :rtype: np.array of length 2*len(x) == 2*len(y)
     """
     if y is None:
         y = x
-    return numpy.array([x, y]).reshape(-1, order='F')
+    return np.array([x, y]).reshape(-1, order='F')
 
 
 
@@ -201,7 +193,7 @@ def hist_outline(dataIn, *args, **kwargs):
     usually does.
 
     Example Usage:
-    binsIn = numpy.arange(0, 1, 0.1)
+    binsIn = np.arange(0, 1, 0.1)
     angle = pylab.rand(50)
 
     (bins, data) = histOutline(binsIn, angle)
@@ -209,12 +201,12 @@ def hist_outline(dataIn, *args, **kwargs):
 
     """
 
-    (histIn, binsIn) = numpy.histogram(dataIn, *args, **kwargs)
+    (histIn, binsIn) = np.histogram(dataIn, *args, **kwargs)
 
     stepSize = binsIn[1] - binsIn[0]
 
-    bins = numpy.zeros(len(binsIn)*2 + 2, dtype=numpy.float)
-    data = numpy.zeros(len(binsIn)*2 + 2, dtype=numpy.float)    
+    bins = np.zeros(len(binsIn)*2 + 2, dtype=np.float)
+    data = np.zeros(len(binsIn)*2 + 2, dtype=np.float)    
     for bb in range(len(binsIn)):
         bins[2*bb + 1] = binsIn[bb]
         bins[2*bb + 2] = binsIn[bb] + stepSize
@@ -230,38 +222,3 @@ def hist_outline(dataIn, *args, **kwargs):
     return (bins, data)
 
 
-
-
-def _check_many_sizes():
-    """Run through a multiplicative series of x-axis lengths and visually confirm that
-    chosen axes are OK."""
-    import numpy 
-    import time
-    import matplotlib.pyplot as pyplot
-
-    pyplot.ion()
-    dt = 6.
-    while True:
-        print dt
-        t0 = numpy.random.uniform(3e7*10)
-        times = numpy.linspace(t0, t0+dt, 20)
-        x = cxctime2plotdate(times)
-        y = numpy.random.normal(size=len(times))
-
-        fig = pyplot.figure(1)
-        fig.clf()
-        plt1 = fig.add_subplot(1, 1, 1)
-        plt1.plot_date(x, y, fmt='b-')
-
-        locs = set_time_ticks(plt1)
-
-        fig.autofmt_xdate()
-        fig.canvas.draw_idle()
-        fig.show()
-        pyplot.show(block=True)
-        dt *= 1.1
-        if dt > 1e9:
-            break
-        
-if __name__ == '__main__':
-    _check_many_sizes()
