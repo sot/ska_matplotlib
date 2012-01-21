@@ -6,6 +6,7 @@ from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
                               DateFormatter, epoch2num)
+from matplotlib.ticker import FixedLocator, FixedFormatter
 import Chandra.Time
 import numpy as np
 
@@ -96,7 +97,8 @@ def remake_ticks(ax):
     ticklocs = set_time_ticks(ax)
     ax.figure.canvas.draw()
     
-def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None, **kwargs):
+def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None,
+                 state_codes=None, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
     value is supplied then the current figure will be used (and created
     automatically if needed).  If yerr or xerr is supplied, ``errorbar()`` will be
@@ -105,6 +107,10 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     the ``plot()`` function.  Also see ``errorbar()`` for an explanation of the possible
     forms of *yerr*/*xerr*.
 
+    If the ``state_codes`` keyword argument is provided then the y-axis ticks and
+    tick labels will be set accordingly.  The ``state_codes`` value must be a list
+    of (raw_count, state_code) tuples, and is normally set to ``msid.state_codes``
+    for an MSID object from fetch().
 
     :param times: CXC time values for x-axis (date)
     :param y: y values
@@ -113,6 +119,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ] 
     :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
     :param tz: timezone string
+    :param state_codes: list of (raw_count, state_code) tuples
     :param **kwargs: keyword args passed through to ``plot_date()`` or ``errorbar()``
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
@@ -131,6 +138,11 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
         ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
+
+    if state_codes is not None:
+        counts, codes = zip(*state_codes)
+        ax.yaxis.set_major_locator(FixedLocator(counts))
+        ax.yaxis.set_major_formatter(FixedFormatter(codes))
 
     # If plotting interactively then show the figure and enable interactive resizing
     if hasattr(fig, 'show'):
