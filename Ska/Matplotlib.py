@@ -10,6 +10,8 @@ from matplotlib.ticker import FixedLocator, FixedFormatter
 import Chandra.Time
 import numpy as np
 
+import lineid_plot
+
 # Default tick locator and format specification for making nice time axes
 TICKLOCS = ((YearLocator, {'base': 5}, '%Y',    YearLocator, {'base': 1}),
             (YearLocator, {'base': 4}, '%Y',    YearLocator, {'base': 1}),
