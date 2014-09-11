@@ -3,7 +3,9 @@
 Depends on Numpy and Matplotlib.
 """
 from __future__ import division, print_function
+from distutils.version import LooseVersion
 import numpy as np
+import matplotlib
 from matplotlib import pyplot as plt
 
 __version__ = "0.2"
@@ -420,8 +422,11 @@ def plot_line_ids(wave, flux, line_wave, line_label1, label1_size=None,
     # Redraw the boxes at their new x location.
     for i in range(nlines):
         box = ax.texts[i]
-        # Add matplotlib 1.4.0 compliance
-        if hasattr(box, 'xyann'):
+        # As of version 1.4.0 matplotlib, the xytext attribute for
+        # annotation was deprecated in favor of xyann.
+        # http://matplotlib.org/api/api_changes.html#changes-in-1-4-x
+        # This if/else block supports both APIs
+        if LooseVersion(matplotlib.__version__) >= LooseVersion('1.4'):
             box.xyann = (wlp[i], box.xyann[1])
         else:
             box.xytext = (wlp[i], box.xytext[1])
