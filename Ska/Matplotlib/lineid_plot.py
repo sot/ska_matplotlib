@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib
 from matplotlib import pyplot as plt
 
-__version__ = "0.2"
+__version__ = "0.3_ska"
 __author__ = "Prasanth Nair"
 
 
