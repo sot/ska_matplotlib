@@ -1,11 +1,13 @@
 from setuptools import setup
+
+from Ska.Matplotlib import __version__
+
 setup(name='Ska.Matplotlib',
       author = 'Tom Aldcroft',
       description='Matplotlib utilities',
       author_email = 'aldcroft@head.cfa.harvard.edu',
-      version='0.11.1',
+      version=__version__,
       zip_safe=False,
-      namespace_packages=['Ska'],
       packages=['Ska', 'Ska/Matplotlib'],
       package_dir={'Ska' : 'Ska',
                    'Ska.Matplotlib': 'Ska/Matplotlib'},
