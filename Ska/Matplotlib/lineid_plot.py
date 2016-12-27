@@ -49,7 +49,7 @@ def unique_labels(line_labels):
     d = defaultdict(int)
     for i in line_labels:
         d[i] += 1
-    for k in d.keys():
+    for k in list(d.keys()):
         if d[k] == 1:
             del d[k]
     line_labels_u = []
