@@ -1,3 +1,5 @@
+from __future__ import print_function, division
+
 import numpy as np
 from Ska.Matplotlib import plot_cxctime, cxctime2plotdate, set_time_ticks
 import matplotlib.pyplot as plt
@@ -16,7 +18,7 @@ def test_check_many_sizes():
     plt.ion()
     dt = 6
     while True:
-        print dt
+        print(dt)
         t0 = np.random.uniform(3e7 * 10)
         times = np.linspace(t0, t0 + dt, 20)
         x = cxctime2plotdate(times)
