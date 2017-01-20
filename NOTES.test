@@ -1,0 +1,7 @@
+# Testing consists of:
+
+$ py.test test.py -s
+
+Then visually confirm that test-*.png plots look OK.
+
+$ eog test-*.png
