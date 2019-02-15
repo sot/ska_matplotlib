@@ -3,7 +3,6 @@
 
 import warnings
 import datetime
-from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
                               DateFormatter, epoch2num)
@@ -132,6 +131,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
+    from matplotlib import pyplot
 
     if fig is None:
         fig = pyplot.gcf()
