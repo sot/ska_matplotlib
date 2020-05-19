@@ -7,7 +7,6 @@ from __future__ import division, print_function, absolute_import
 from distutils.version import LooseVersion
 import numpy as np
 import matplotlib
-from matplotlib import pyplot as plt
 from six.moves import zip
 
 __version__ = "0.3_ska"
@@ -223,6 +222,8 @@ def prepare_axes(wave, flux, fig=None, ax_lower=(0.1, 0.1),
                  ax_dim=(0.85, 0.65)):
     """Create fig and axes if needed and layout axes in fig."""
     # Axes location in figure.
+    from matplotlib import pyplot as plt
+
     if not fig:
         fig = plt.figure()
     ax = fig.add_axes([ax_lower[0], ax_lower[1], ax_dim[0], ax_dim[1]])
@@ -441,6 +442,7 @@ def plot_line_ids(wave, flux, line_wave, line_label1, label1_size=None,
     return fig, ax
 
 if __name__ == "__main__":
+    from matplotlib import pyplot as plt
     wave = 1240 + np.arange(300) * 0.1
     flux = np.random.normal(size=300)
     line_wave = [1242.80, 1260.42, 1264.74, 1265.00, 1265.2, 1265.3, 1265.35]

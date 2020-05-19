@@ -1,9 +1,6 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
 """Provide useful utilities for matplotlib."""
 
-import warnings
-import datetime
-from matplotlib import pyplot
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
                               DateFormatter, epoch2num)
@@ -56,7 +53,7 @@ def set_time_ticks(plt, ticklocs=None):
     Pick nice values to show time ticks in a date plot.
 
     Example::
-    
+
       x = cxctime2plotdate(np.linspace(0, 3e7, 20))
       y = np.random.normal(size=len(x))
 
@@ -97,7 +94,7 @@ def remake_ticks(ax):
     """
     ticklocs = set_time_ticks(ax)
     ax.figure.canvas.draw()
-    
+
 def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None,
                  state_codes=None, interactive=True, **kwargs):
     """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
@@ -123,7 +120,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     :param y: y values
     :param fmt: plot format (default = '-b')
     :param fig: pyplot figure object (optional)
-    :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ] 
+    :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]
     :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
     :param tz: timezone string
     :param state_codes: list of (raw_count, state_code) tuples
@@ -132,6 +129,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
+    from matplotlib import pyplot
 
     if fig is None:
         fig = pyplot.gcf()
@@ -164,17 +162,17 @@ def cxctime2plotdate(times):
     """
     Convert input CXC time (sec) to the time base required for the matplotlib
     plot_date function (days since start of year 1).
-    
+
     :param times: iterable list of times
     :rtype: plot_date times
     """
-    
+
     # Find the plotdate of first time and use a relative offset from there
     t0 = Chandra.Time.DateTime(times[0]).unix
     plotdate0 = epoch2num(t0)
 
     return (np.asarray(times) - times[0]) / 86400. + plotdate0
-        
+
 
 def pointpair(x, y=None):
     """Interleave and then flatten two arrays ``x`` and ``y``.  This is
@@ -226,7 +224,7 @@ def hist_outline(dataIn, *args, **kwargs):
     stepSize = binsIn[1] - binsIn[0]
 
     bins = np.zeros(len(binsIn)*2 + 2, dtype=np.float)
-    data = np.zeros(len(binsIn)*2 + 2, dtype=np.float)    
+    data = np.zeros(len(binsIn)*2 + 2, dtype=np.float)
     for bb in range(len(binsIn)):
         bins[2*bb + 1] = binsIn[bb]
         bins[2*bb + 2] = binsIn[bb] + stepSize
@@ -238,7 +236,7 @@ def hist_outline(dataIn, *args, **kwargs):
     bins[-1] = bins[-2]
     data[0] = 0
     data[-1] = 0
-    
+
     return (bins, data)
 
 
