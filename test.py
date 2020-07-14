@@ -1,12 +1,11 @@
 # Licensed under a 3-clause BSD style license - see LICENSE.rst
-from __future__ import print_function, division
 
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import numpy as np
-from Ska.Matplotlib import plot_cxctime
+from Ska.Matplotlib import plot_cxctime, cxctime2plotdate
 from Ska.Matplotlib.lineid_plot import plot_line_ids
 import pytest
 
@@ -41,3 +40,30 @@ def test_lineid():
                   ['line{}'.format(ii) for ii in
                    (0, 0, 0, 1, 1, 2, 3, 4, 5, 6)])
     plt.savefig('test-lineid.png')
+
+
+def test_cxctime2plotdate():
+    from cxotime import CxoTime
+    from Chandra.Time import DateTime
+    ct = CxoTime(np.arange(3) * 10015. + 1e8)
+    dt = DateTime(np.arange(3) * 10015. + 1e8)
+
+    plot_dates_ref = dt.plotdate
+
+    plt.figure(0)
+    vals = ct.secs
+    offset = 0
+    for attr in ('secs', 'date', 'greta', None):
+        for converter in (list, lambda x: x):
+            for t_in in (ct, dt):
+                times = converter(getattr(t_in, attr)) if attr else t_in
+                plot_dates = cxctime2plotdate(times)
+                assert np.allclose(plot_dates, plot_dates_ref, rtol=0, atol=1e-8)
+
+                # Make sure plot_cxctime does not crashi
+                plot_cxctime(times, vals + offset, color=None,
+                             label=f'{attr} {converter is list} {t_in is ct}')
+                offset += 5000
+
+    plt.legend(fontsize='small')
+    plt.savefig('test-time-inputs.png')
