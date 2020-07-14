@@ -45,13 +45,13 @@ def test_lineid():
 def test_cxctime2plotdate():
     from cxotime import CxoTime
     from Chandra.Time import DateTime
-    ct = CxoTime(np.arange(3) * 10015. + 1e8)
-    dt = DateTime(np.arange(3) * 10015. + 1e8)
+    ct = CxoTime(np.arange(30) * 10015. + 1e8)
+    dt = DateTime(np.arange(30) * 10015. + 1e8)
 
     plot_dates_ref = dt.plotdate
 
     plt.figure(0)
-    vals = ct.secs
+    vals = ct.secs - ct.secs[0]
     offset = 0
     for attr in ('secs', 'date', 'greta', None):
         for converter in (list, lambda x: x):
