@@ -178,7 +178,7 @@ def cxctime2plotdate(times):
             times = CxoTime(times).secs
 
     # Find the plotdate of first time and use a relative offset from there
-    t0 = DateTime(times[0]).unix
+    t0 = CxoTime(times[0]).unix
     plotdate0 = epoch2num(t0)
     return (times - times[0]) / 86400. + plotdate0
 
