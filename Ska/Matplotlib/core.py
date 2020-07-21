@@ -5,7 +5,8 @@ from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
                               DateFormatter, epoch2num)
 from matplotlib.ticker import FixedLocator, FixedFormatter
-import Chandra.Time
+from Chandra.Time import DateTime
+from cxotime import CxoTime
 import numpy as np
 
 # Default tick locator and format specification for making nice time axes
@@ -97,13 +98,13 @@ def remake_ticks(ax):
 
 def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None,
                  state_codes=None, interactive=True, **kwargs):
-    """Make a date plot where the X-axis values are in CXC time.  If no ``fig``
+    """Make a date plot where the X-axis values are in a CXC time compatible format.  If no ``fig``
     value is supplied then the current figure will be used (and created
-    automatically if needed).  If yerr or xerr is supplied, ``errorbar()`` will be
-    called and any additional keyword arguments will be passed to it.  Otherwise
-    any additional keyword arguments (e.g. ``fmt='b-'``) are passed through to
-    the ``plot()`` function.  Also see ``errorbar()`` for an explanation of the possible
-    forms of *yerr*/*xerr*.
+    automatically if needed).  If yerr or xerr is supplied, ``errorbar()`` will
+    be called and any additional keyword arguments will be passed to it.
+    Otherwise any additional keyword arguments (e.g. ``fmt='b-'``) are passed
+    through to the ``plot()`` function.  Also see ``errorbar()`` for an
+    explanation of the possible forms of *yerr*/*xerr*.
 
     If the ``state_codes`` keyword argument is provided then the y-axis ticks and
     tick labels will be set accordingly.  The ``state_codes`` value must be a list
@@ -116,7 +117,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     this to False to improve the speed when making several plots.  This will likely
     require issuing a plt.draw() or fig.canvas.draw() command at the end.
 
-    :param times: CXC time values for x-axis (date)
+    :param times: CXC time values for x-axis (DateTime compatible format, CxoTime)
     :param y: y values
     :param fmt: plot format (default = '-b')
     :param fig: pyplot figure object (optional)
@@ -163,15 +164,23 @@ def cxctime2plotdate(times):
     Convert input CXC time (sec) to the time base required for the matplotlib
     plot_date function (days since start of year 1).
 
-    :param times: iterable list of times
+    :param times: times (any DateTime compatible format or object)
     :rtype: plot_date times
     """
+    # Convert times to float array of CXC seconds
+    if isinstance(times, (DateTime, CxoTime)):
+        times = times.secs
+    else:
+        times = np.asarray(times)
+
+        # If not floating point then use CxoTime to convert to seconds
+        if times.dtype.kind != 'f':
+            times = CxoTime(times).secs
 
     # Find the plotdate of first time and use a relative offset from there
-    t0 = Chandra.Time.DateTime(times[0]).unix
+    t0 = CxoTime(times[0]).unix
     plotdate0 = epoch2num(t0)
-
-    return (np.asarray(times) - times[0]) / 86400. + plotdate0
+    return (times - times[0]) / 86400. + plotdate0
 
 
 def pointpair(x, y=None):
@@ -198,8 +207,6 @@ def pointpair(x, y=None):
     if y is None:
         y = x
     return np.array([x, y]).reshape(-1, order='F')
-
-
 
 
 def hist_outline(dataIn, *args, **kwargs):
