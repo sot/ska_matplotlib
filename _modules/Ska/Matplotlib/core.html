@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ska.Matplotlib.core &#8212; Ska.Matplotlib 3.11.5.dev14+g1a9caa5 documentation</title>
+    <link rel="stylesheet" href="../../../_static/bootstrap-astropy.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Documentation Home" href="../../../index.html"><span id="logotext1">Ska! </span><span id="logotext2">Ska</span><span id="logotext3">.Matplotlib</span></a>
+  <ul>
+    
+    <li><a class="home" title="Homepage" href="">
+        <span id="logotext1"></span><span id="logotext2"></span>
+    </a></li>
+    <li><a title="General Index" href="../../../genindex.html">Index</a></li>
+    <li><a title="Module Index" href="../../../py-modindex.html">Modules</a></li>
+    <li>
+      
+      
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li>
+	<a href="../../../index.html">Ska.Matplotlib 3.11.5.dev14+g1a9caa5 documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Ska.Matplotlib.core</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Licensed under a 3-clause BSD style license - see LICENSE.rst</span>
+<span class="sd">&quot;&quot;&quot;Provide useful utilities for matplotlib.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="p">(</span><span class="n">YearLocator</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span>
+                              <span class="n">HourLocator</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span>
+                              <span class="n">DateFormatter</span><span class="p">,</span> <span class="n">epoch2num</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FixedLocator</span><span class="p">,</span> <span class="n">FixedFormatter</span>
+<span class="kn">from</span> <span class="nn">Chandra.Time</span> <span class="kn">import</span> <span class="n">DateTime</span>
+<span class="kn">from</span> <span class="nn">cxotime</span> <span class="kn">import</span> <span class="n">CxoTime</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Default tick locator and format specification for making nice time axes</span>
+<span class="n">TICKLOCS</span> <span class="o">=</span> <span class="p">((</span><span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="s1">&#39;%Y&#39;</span><span class="p">,</span>    <span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+            <span class="p">(</span><span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="s1">&#39;%Y&#39;</span><span class="p">,</span>    <span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+            <span class="p">(</span><span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="s1">&#39;%Y&#39;</span><span class="p">,</span>    <span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}),</span>
+            <span class="p">(</span><span class="n">YearLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;%Y&#39;</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonth&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">)}),</span>
+            <span class="p">(</span><span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonth&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">))},</span> <span class="s1">&#39;%Y-%b&#39;</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonth&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">4</span><span class="p">))},</span> <span class="s1">&#39;%Y-%b&#39;</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonth&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">3</span><span class="p">))},</span> <span class="s1">&#39;%Y-%b&#39;</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonth&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">2</span><span class="p">))},</span> <span class="s1">&#39;%Y-%b&#39;</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MonthLocator</span><span class="p">,</span> <span class="p">{},</span>         <span class="s1">&#39;%Y-%b&#39;</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bymonthday&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">)}),</span>
+
+            <span class="p">(</span><span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span> <span class="s1">&#39;%Y:%j&#39;</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">},</span> <span class="s1">&#39;%Y:%j&#39;</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="s1">&#39;%Y:%j&#39;</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="s1">&#39;%Y:%j&#39;</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">DayLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;interval&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;%Y:%j&#39;</span><span class="p">,</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byhour&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">)}),</span>
+
+            <span class="p">(</span><span class="n">HourLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byhour&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">12</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:00&#39;</span><span class="p">,</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">HourLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byhour&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">6</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:00&#39;</span><span class="p">,</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">HourLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byhour&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">4</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:00&#39;</span><span class="p">,</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">HourLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byhour&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">2</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:00&#39;</span><span class="p">,</span> <span class="n">HourLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">HourLocator</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;%j:%H:00&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)}),</span>
+
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">))}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">))}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">10</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">5</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">4</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;byminute&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">2</span><span class="p">))},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">MinuteLocator</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;%j:%H:%M&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)}),</span>
+
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">))}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">45</span><span class="p">)},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">5</span><span class="p">))}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">10</span><span class="p">))},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">5</span><span class="p">))},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">4</span><span class="p">))},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;bysecond&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">2</span><span class="p">))},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span><span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{},</span> <span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="set_time_ticks"><a class="viewcode-back" href="../../../index.html#Ska.Matplotlib.set_time_ticks">[docs]</a><span class="k">def</span> <span class="nf">set_time_ticks</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">ticklocs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pick nice values to show time ticks in a date plot.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">      x = cxctime2plotdate(np.linspace(0, 3e7, 20))</span>
+<span class="sd">      y = np.random.normal(size=len(x))</span>
+
+<span class="sd">      fig = pylab.figure()</span>
+<span class="sd">      plt = fig.add_subplot(1, 1, 1)</span>
+<span class="sd">      plt.plot_date(x, y, fmt=&#39;b-&#39;)</span>
+<span class="sd">      ticklocs = set_time_ticks(plt)</span>
+
+<span class="sd">      fig.autofmt_xdate()</span>
+<span class="sd">      fig.show()</span>
+
+<span class="sd">    The returned value of ``ticklocs`` can be used in subsequent date plots to</span>
+<span class="sd">    force the same major and minor tick locations and formatting.  Note also</span>
+<span class="sd">    the use of the high-level fig.autofmt_xdate() convenience method to configure</span>
+<span class="sd">    vertically stacked date plot(s) to be well-formatted.</span>
+
+<span class="sd">    :param plt: ``matplotlib.axes.AxesSubplot`` object (from ``pylab.figure.add_subplot``)</span>
+<span class="sd">    :param ticklocs: list of major/minor tick locators ala the default ``TICKLOCS``</span>
+<span class="sd">    :rtype: tuple with selected ticklocs as first element</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">locs</span> <span class="o">=</span> <span class="n">ticklocs</span> <span class="ow">or</span> <span class="n">TICKLOCS</span>
+
+    <span class="k">for</span> <span class="n">majorLoc</span><span class="p">,</span> <span class="n">major_kwargs</span><span class="p">,</span> <span class="n">major_fmt</span><span class="p">,</span> <span class="n">minorLoc</span><span class="p">,</span> <span class="n">minor_kwargs</span> <span class="ow">in</span> <span class="n">locs</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">majorLoc</span><span class="p">(</span><span class="o">**</span><span class="n">major_kwargs</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">minorLoc</span><span class="p">(</span><span class="o">**</span><span class="n">minor_kwargs</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">DateFormatter</span><span class="p">(</span><span class="n">major_fmt</span><span class="p">))</span>
+
+        <span class="n">majorticklocs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_ticklocs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">majorticklocs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="p">((</span><span class="n">majorLoc</span><span class="p">,</span> <span class="n">major_kwargs</span><span class="p">,</span> <span class="n">major_fmt</span><span class="p">,</span> <span class="n">minorLoc</span><span class="p">,</span> <span class="n">minor_kwargs</span><span class="p">),</span> <span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">remake_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remake the date ticks for the current plot if space is pressed.  If &#39;0&#39;</span>
+<span class="sd">    is pressed then set the date ticks to the maximum possible range.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ticklocs</span> <span class="o">=</span> <span class="n">set_time_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+<div class="viewcode-block" id="plot_cxctime"><a class="viewcode-back" href="../../../index.html#Ska.Matplotlib.plot_cxctime">[docs]</a><span class="k">def</span> <span class="nf">plot_cxctime</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="n">fig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">state_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a date plot where the X-axis values are in a CXC time compatible format.  If no ``fig``</span>
+<span class="sd">    value is supplied then the current figure will be used (and created</span>
+<span class="sd">    automatically if needed).  If yerr or xerr is supplied, ``errorbar()`` will</span>
+<span class="sd">    be called and any additional keyword arguments will be passed to it.</span>
+<span class="sd">    Otherwise any additional keyword arguments (e.g. ``fmt=&#39;b-&#39;``) are passed</span>
+<span class="sd">    through to the ``plot()`` function.  Also see ``errorbar()`` for an</span>
+<span class="sd">    explanation of the possible forms of *yerr*/*xerr*.</span>
+
+<span class="sd">    If the ``state_codes`` keyword argument is provided then the y-axis ticks and</span>
+<span class="sd">    tick labels will be set accordingly.  The ``state_codes`` value must be a list</span>
+<span class="sd">    of (raw_count, state_code) tuples, and is normally set to ``msid.state_codes``</span>
+<span class="sd">    for an MSID object from fetch().</span>
+
+<span class="sd">    If the ``interactive`` keyword is True (default) then the plot will be redrawn</span>
+<span class="sd">    at the end and a GUI callback will be created which allows for on-the-fly</span>
+<span class="sd">    update of the date tick labels when panning and zooming interactively.  Set</span>
+<span class="sd">    this to False to improve the speed when making several plots.  This will likely</span>
+<span class="sd">    require issuing a plt.draw() or fig.canvas.draw() command at the end.</span>
+
+<span class="sd">    :param times: CXC time values for x-axis (DateTime compatible format, CxoTime)</span>
+<span class="sd">    :param y: y values</span>
+<span class="sd">    :param fmt: plot format (default = &#39;-b&#39;)</span>
+<span class="sd">    :param fig: pyplot figure object (optional)</span>
+<span class="sd">    :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]</span>
+<span class="sd">    :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )</span>
+<span class="sd">    :param tz: timezone string</span>
+<span class="sd">    :param state_codes: list of (raw_count, state_code) tuples</span>
+<span class="sd">    :param interactive: use plot interactively (default=True, faster if False)</span>
+<span class="sd">    :param **kwargs: keyword args passed through to ``plot_date()`` or ``errorbar()``</span>
+
+<span class="sd">    :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
+
+    <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">yerr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">xerr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">cxctime2plotdate</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">yerr</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="n">xerr</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">xaxis_date</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot_date</span><span class="p">(</span><span class="n">cxctime2plotdate</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">ticklocs</span> <span class="o">=</span> <span class="n">set_time_ticks</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">state_codes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">codes</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">state_codes</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">FixedLocator</span><span class="p">(</span><span class="n">counts</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">FixedFormatter</span><span class="p">(</span><span class="n">codes</span><span class="p">))</span>
+
+    <span class="c1"># If plotting interactively then show the figure and enable interactive resizing</span>
+    <span class="k">if</span> <span class="n">interactive</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s1">&#39;show&#39;</span><span class="p">):</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;xlim_changed&#39;</span><span class="p">,</span> <span class="n">remake_ticks</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ticklocs</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+
+
+<div class="viewcode-block" id="cxctime2plotdate"><a class="viewcode-back" href="../../../index.html#Ska.Matplotlib.cxctime2plotdate">[docs]</a><span class="k">def</span> <span class="nf">cxctime2plotdate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert input CXC time (sec) to the time base required for the matplotlib</span>
+<span class="sd">    plot_date function (days since start of year 1).</span>
+
+<span class="sd">    :param times: times (any DateTime compatible format or object)</span>
+<span class="sd">    :rtype: plot_date times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert times to float array of CXC seconds</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">CxoTime</span><span class="p">)):</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">secs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+
+        <span class="c1"># If not floating point then use CxoTime to convert to seconds</span>
+        <span class="k">if</span> <span class="n">times</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
+            <span class="n">times</span> <span class="o">=</span> <span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">secs</span>
+
+    <span class="c1"># Find the plotdate of first time and use a relative offset from there</span>
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">unix</span>
+    <span class="n">plotdate0</span> <span class="o">=</span> <span class="n">epoch2num</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">times</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">86400.</span> <span class="o">+</span> <span class="n">plotdate0</span></div>
+
+
+<div class="viewcode-block" id="pointpair"><a class="viewcode-back" href="../../../index.html#Ska.Matplotlib.pointpair">[docs]</a><span class="k">def</span> <span class="nf">pointpair</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interleave and then flatten two arrays ``x`` and ``y``.  This is</span>
+<span class="sd">    typically useful for making a histogram style plot where ``x`` and ``y``</span>
+<span class="sd">    are the bin start and stop respectively.  If no value for ``y`` is provided then</span>
+<span class="sd">    ``x`` is used.</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">      from Ska.Matplotlib import pointpair</span>
+<span class="sd">      x = np.arange(1, 100, 5)</span>
+<span class="sd">      x0 = x[:-1]</span>
+<span class="sd">      x1 = x[1:]</span>
+<span class="sd">      y = np.random.uniform(len(x0))</span>
+<span class="sd">      xpp = pointpair(x0, x1)</span>
+<span class="sd">      ypp = pointpair(y)</span>
+<span class="sd">      plot(xpp, ypp)</span>
+
+<span class="sd">    :x: left edge value of point pairs</span>
+<span class="sd">    :y: right edge value of point pairs (optional)</span>
+<span class="sd">    :rtype: np.array of length 2*len(x) == 2*len(y)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">hist_outline</span><span class="p">(</span><span class="n">dataIn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    histOutline from http://www.scipy.org/Cookbook/Matplotlib/UnfilledHistograms</span>
+
+<span class="sd">    Make a histogram that can be plotted with plot() so that</span>
+<span class="sd">    the histogram just has the outline rather than bars as it</span>
+<span class="sd">    usually does.</span>
+
+<span class="sd">    Example Usage:</span>
+<span class="sd">    binsIn = np.arange(0, 1, 0.1)</span>
+<span class="sd">    angle = pylab.rand(50)</span>
+
+<span class="sd">    (bins, data) = histOutline(binsIn, angle)</span>
+<span class="sd">    plot(bins, data, &#39;k-&#39;, linewidth=2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="p">(</span><span class="n">histIn</span><span class="p">,</span> <span class="n">binsIn</span><span class="p">)</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">dataIn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">stepSize</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">binsIn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)):</span>
+        <span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span>
+        <span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span> <span class="o">+</span> <span class="n">stepSize</span>
+        <span class="k">if</span> <span class="n">bb</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">histIn</span><span class="p">):</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">histIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span>
+            <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">histIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span>
+
+    <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Page Contents</h3>
+
+
+<form action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2020, Tom Aldcroft.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 3.1.2. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>
