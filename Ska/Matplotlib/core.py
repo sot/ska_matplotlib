@@ -126,7 +126,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     :param tz: timezone string
     :param state_codes: list of (raw_count, state_code) tuples
     :param interactive: use plot interactively (default=True, faster if False)
-    :param **kwargs: keyword args passed through to ``plot_date()`` or ``errorbar()``
+    :param ``**kwargs``: keyword args passed through to ``plot_date()`` or ``errorbar()``
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
