@@ -177,10 +177,19 @@ def cxctime2plotdate(times):
         if times.dtype.kind != 'f':
             times = CxoTime(times).secs
 
+    shape = times.shape
+
+    # Zero-length input gives empty output
+    if shape == (0,):
+        return np.array([], dtype=np.float64)
+
     # Find the plotdate of first time and use a relative offset from there
+    times = times.ravel()
     t0 = CxoTime(times[0]).unix
     plotdate0 = epoch2num(t0)
-    return (times - times[0]) / 86400. + plotdate0
+    out = (times - times[0]) / 86400. + plotdate0
+
+    return out.reshape(shape)
 
 
 def pointpair(x, y=None):

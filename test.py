@@ -67,3 +67,18 @@ def test_cxctime2plotdate():
 
     plt.legend(fontsize='small')
     plt.savefig('test-time-inputs.png')
+
+
+def test_cxctime2plotdate_shapes():
+    pd_ref = cxctime2plotdate([1, 2, 3, 4])
+
+    out = cxctime2plotdate([])
+    assert out.shape == (0,)
+
+    out = cxctime2plotdate(1)
+    assert out.shape == ()
+    assert out == pd_ref[0]
+
+    out = cxctime2plotdate([[1, 2], [3, 4]])
+    assert out.shape == (2, 2)
+    assert np.all(out.ravel() == pd_ref)
