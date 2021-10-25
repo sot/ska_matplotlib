@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ska.Matplotlib.core &#8212; Ska.Matplotlib 3.12.0 documentation</title>
+    <title>Ska.Matplotlib.core &#8212; Ska.Matplotlib 3.13.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -47,7 +47,7 @@
     <h3>Navigation</h3>
     <ul>
       <li>
-	<a href="../../../index.html">Ska.Matplotlib 3.12.0 documentation</a>
+	<a href="../../../index.html">Ska.Matplotlib 3.13.0 documentation</a>
 	 &#187;
       </li>
       <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
@@ -242,10 +242,19 @@
         <span class="k">if</span> <span class="n">times</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">!=</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span>
             <span class="n">times</span> <span class="o">=</span> <span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">secs</span>
 
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="c1"># Zero-length input gives empty output</span>
+    <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
     <span class="c1"># Find the plotdate of first time and use a relative offset from there</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
     <span class="n">t0</span> <span class="o">=</span> <span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">unix</span>
     <span class="n">plotdate0</span> <span class="o">=</span> <span class="n">epoch2num</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">times</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">86400.</span> <span class="o">+</span> <span class="n">plotdate0</span></div>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">times</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">86400.</span> <span class="o">+</span> <span class="n">plotdate0</span>
+
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="pointpair"><a class="viewcode-back" href="../../../index.html#Ska.Matplotlib.pointpair">[docs]</a><span class="k">def</span> <span class="nf">pointpair</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
