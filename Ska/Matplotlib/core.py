@@ -239,8 +239,8 @@ def hist_outline(dataIn, *args, **kwargs):
 
     stepSize = binsIn[1] - binsIn[0]
 
-    bins = np.zeros(len(binsIn)*2 + 2, dtype=np.float64)
-    data = np.zeros(len(binsIn)*2 + 2, dtype=np.float64)
+    bins = np.zeros(len(binsIn)*2 + 2, dtype=float)
+    data = np.zeros(len(binsIn)*2 + 2, dtype=float)
     for bb in range(len(binsIn)):
         bins[2*bb + 1] = binsIn[bb]
         bins[2*bb + 2] = binsIn[bb] + stepSize
