@@ -3,7 +3,7 @@
 
 from matplotlib.dates import (YearLocator, MonthLocator, DayLocator,
                               HourLocator, MinuteLocator, SecondLocator,
-                              DateFormatter, epoch2num)
+                              DateFormatter, date2num)
 from matplotlib.ticker import FixedLocator, FixedFormatter
 from Chandra.Time import DateTime
 from cxotime import CxoTime
@@ -185,8 +185,7 @@ def cxctime2plotdate(times):
 
     # Find the plotdate of first time and use a relative offset from there
     times = times.ravel()
-    t0 = CxoTime(times[0]).unix
-    plotdate0 = epoch2num(t0)
+    plotdate0 = date2num(CxoTime(times[0]).datetime)
     out = (times - times[0]) / 86400. + plotdate0
 
     return out.reshape(shape)
@@ -239,8 +238,8 @@ def hist_outline(dataIn, *args, **kwargs):
 
     stepSize = binsIn[1] - binsIn[0]
 
-    bins = np.zeros(len(binsIn)*2 + 2, dtype=np.float)
-    data = np.zeros(len(binsIn)*2 + 2, dtype=np.float)
+    bins = np.zeros(len(binsIn)*2 + 2, dtype=float)
+    data = np.zeros(len(binsIn)*2 + 2, dtype=float)
     for bb in range(len(binsIn)):
         bins[2*bb + 1] = binsIn[bb]
         bins[2*bb + 2] = binsIn[bb] + stepSize
