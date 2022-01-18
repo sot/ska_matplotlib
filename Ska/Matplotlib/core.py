@@ -185,8 +185,7 @@ def cxctime2plotdate(times):
 
     # Find the plotdate of first time and use a relative offset from there
     times = times.ravel()
-    t0 = CxoTime(times[0]).unix
-    plotdate0 = date2num(t0 * 1e6)  # Float arg to date2num is in microsecs
+    plotdate0 = date2num(CxoTime(times[0]).datetime)
     out = (times - times[0]) / 86400. + plotdate0
 
     return out.reshape(shape)
