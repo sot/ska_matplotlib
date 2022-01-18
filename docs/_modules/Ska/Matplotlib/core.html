@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ska.Matplotlib.core &#8212; Ska.Matplotlib 3.13.0 documentation</title>
+    <title>Ska.Matplotlib.core &#8212; Ska.Matplotlib 3.13.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -47,7 +47,7 @@
     <h3>Navigation</h3>
     <ul>
       <li>
-	<a href="../../../index.html">Ska.Matplotlib 3.13.0 documentation</a>
+	<a href="../../../index.html">Ska.Matplotlib 3.13.1 documentation</a>
 	 &#187;
       </li>
       <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
@@ -68,7 +68,7 @@
 
 <span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="p">(</span><span class="n">YearLocator</span><span class="p">,</span> <span class="n">MonthLocator</span><span class="p">,</span> <span class="n">DayLocator</span><span class="p">,</span>
                               <span class="n">HourLocator</span><span class="p">,</span> <span class="n">MinuteLocator</span><span class="p">,</span> <span class="n">SecondLocator</span><span class="p">,</span>
-                              <span class="n">DateFormatter</span><span class="p">,</span> <span class="n">epoch2num</span><span class="p">)</span>
+                              <span class="n">DateFormatter</span><span class="p">,</span> <span class="n">date2num</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">FixedLocator</span><span class="p">,</span> <span class="n">FixedFormatter</span>
 <span class="kn">from</span> <span class="nn">Chandra.Time</span> <span class="kn">import</span> <span class="n">DateTime</span>
 <span class="kn">from</span> <span class="nn">cxotime</span> <span class="kn">import</span> <span class="n">CxoTime</span>
@@ -250,8 +250,7 @@
 
     <span class="c1"># Find the plotdate of first time and use a relative offset from there</span>
     <span class="n">times</span> <span class="o">=</span> <span class="n">times</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-    <span class="n">t0</span> <span class="o">=</span> <span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">unix</span>
-    <span class="n">plotdate0</span> <span class="o">=</span> <span class="n">epoch2num</span><span class="p">(</span><span class="n">t0</span><span class="p">)</span>
+    <span class="n">plotdate0</span> <span class="o">=</span> <span class="n">date2num</span><span class="p">(</span><span class="n">CxoTime</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">times</span> <span class="o">-</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mf">86400.</span> <span class="o">+</span> <span class="n">plotdate0</span>
 
     <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
@@ -304,8 +303,8 @@
 
     <span class="n">stepSize</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">binsIn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">bb</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">binsIn</span><span class="p">)):</span>
         <span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span>
         <span class="n">bins</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="n">bb</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsIn</span><span class="p">[</span><span class="n">bb</span><span class="p">]</span> <span class="o">+</span> <span class="n">stepSize</span>
