@@ -138,17 +138,20 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
     if ax is None:
         ax = fig.gca()
 
-    ls = '-' if 'linestyle' not in kwargs else ''
-    col = 'b' if 'color' not in kwargs else''
+    ls = '' if 'linestyle' in kwargs or 'ls' in kwargs else '-'
+    col = '' if 'color' in kwargs else 'b'
     default_fmt = f'{ls}{col}'
     if fmt is None and default_fmt:
         fmt = default_fmt
+    if fmt is not None:
+        kwargs.update({'fmt': fmt})
 
     if yerr is not None or xerr is not None:
-        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, fmt=fmt, **kwargs)
+        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, **kwargs)
         ax.xaxis_date(tz)
     else:
-        ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
+        ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
 
