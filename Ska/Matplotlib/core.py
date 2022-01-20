@@ -96,7 +96,7 @@ def remake_ticks(ax):
     ticklocs = set_time_ticks(ax)
     ax.figure.canvas.draw()
 
-def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None,
+def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz=None,
                  state_codes=None, interactive=True, **kwargs):
     """Make a date plot where the X-axis values are in a CXC time compatible format.  If no ``fig``
     value is supplied then the current figure will be used (and created
@@ -137,6 +137,12 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     if ax is None:
         ax = fig.gca()
+
+    ls = '-' if 'linestyle' not in kwargs else ''
+    col = 'b' if 'color' not in kwargs else''
+    default_fmt = f'{ls}{col}'
+    if fmt is None and default_fmt:
+        fmt = default_fmt
 
     if yerr is not None or xerr is not None:
         ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, fmt=fmt, **kwargs)
