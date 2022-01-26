@@ -138,11 +138,6 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
     if ax is None:
         ax = fig.gca()
 
-    ls = '' if 'linestyle' in kwargs or 'ls' in kwargs else '-'
-    col = '' if 'color' in kwargs else 'b'
-    default_fmt = f'{ls}{col}'
-    if fmt is None and default_fmt:
-        fmt = default_fmt
     if fmt is not None:
         kwargs.update({'fmt': fmt})
 
