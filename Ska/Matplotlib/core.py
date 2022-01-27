@@ -96,7 +96,7 @@ def remake_ticks(ax):
     ticklocs = set_time_ticks(ax)
     ax.figure.canvas.draw()
 
-def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz=None,
+def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz=None,
                  state_codes=None, interactive=True, **kwargs):
     """Make a date plot where the X-axis values are in a CXC time compatible format.  If no ``fig``
     value is supplied then the current figure will be used (and created
@@ -119,7 +119,7 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
 
     :param times: CXC time values for x-axis (DateTime compatible format, CxoTime)
     :param y: y values
-    :param fmt: plot format (default = '-b')
+    :param fmt: plot format (not used by default, matplotlib will use its default)
     :param fig: pyplot figure object (optional)
     :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]
     :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
@@ -138,11 +138,15 @@ def plot_cxctime(times, y, fmt='-b', fig=None, ax=None, yerr=None, xerr=None, tz
     if ax is None:
         ax = fig.gca()
 
+    if fmt is not None:
+        kwargs.update({'fmt': fmt})
+
     if yerr is not None or xerr is not None:
-        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, fmt=fmt, **kwargs)
+        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, **kwargs)
         ax.xaxis_date(tz)
     else:
-        ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
+        ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
 
