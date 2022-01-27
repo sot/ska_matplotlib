@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ska.Matplotlib &#8212; Ska.Matplotlib 3.13.1 documentation</title>
+    <title>Ska.Matplotlib &#8212; Ska.Matplotlib 0.1.dev1+gc591844 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -47,7 +47,7 @@
     <h3>Navigation</h3>
     <ul>
       <li>
-	<a href="#">Ska.Matplotlib 3.13.1 documentation</a>
+	<a href="#">Ska.Matplotlib 0.1.dev1+gc591844 documentation</a>
 	 &#187;
       </li>
       
@@ -82,7 +82,7 @@ plot_date function (days since start of year 1).</p>
 
 <dl class="py function">
 <dt id="Ska.Matplotlib.plot_cxctime">
-<code class="sig-prename descclassname">Ska.Matplotlib.</code><code class="sig-name descname">plot_cxctime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">fmt</span><span class="o">=</span><span class="default_value">'-b'</span></em>, <em class="sig-param"><span class="n">fig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yerr</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xerr</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">state_codes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interactive</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Ska/Matplotlib/core.html#plot_cxctime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Ska.Matplotlib.plot_cxctime" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Ska.Matplotlib.</code><code class="sig-name descname">plot_cxctime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">fmt</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fig</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yerr</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xerr</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">state_codes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interactive</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Ska/Matplotlib/core.html#plot_cxctime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Ska.Matplotlib.plot_cxctime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a date plot where the X-axis values are in a CXC time compatible format.  If no <code class="docutils literal notranslate"><span class="pre">fig</span></code>
 value is supplied then the current figure will be used (and created
 automatically if needed).  If yerr or xerr is supplied, <code class="docutils literal notranslate"><span class="pre">errorbar()</span></code> will
@@ -104,7 +104,7 @@ require issuing a plt.draw() or fig.canvas.draw() command at the end.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>times</strong> – CXC time values for x-axis (DateTime compatible format, CxoTime)</p></li>
 <li><p><strong>y</strong> – y values</p></li>
-<li><p><strong>fmt</strong> – plot format (default = ‘-b’)</p></li>
+<li><p><strong>fmt</strong> – plot format (not used by default, matplotlib will use its default)</p></li>
 <li><p><strong>fig</strong> – pyplot figure object (optional)</p></li>
 <li><p><strong>yerr</strong> – error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]</p></li>
 <li><p><strong>xerr</strong> – error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )</p></li>
