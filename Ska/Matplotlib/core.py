@@ -119,7 +119,7 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
 
     :param times: CXC time values for x-axis (DateTime compatible format, CxoTime)
     :param y: y values
-    :param fmt: plot format (default = '-b')
+    :param fmt: plot format (not used by default, matplotlib will use its default)
     :param fig: pyplot figure object (optional)
     :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]
     :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
