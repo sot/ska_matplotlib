@@ -119,14 +119,14 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
 
     :param times: CXC time values for x-axis (DateTime compatible format, CxoTime)
     :param y: y values
-    :param fmt: plot format (not used by default, matplotlib will use its default)
+    :param fmt: plot format (default None)
     :param fig: pyplot figure object (optional)
     :param yerr: error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]
     :param xerr: error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )
     :param tz: timezone string
     :param state_codes: list of (raw_count, state_code) tuples
     :param interactive: use plot interactively (default=True, faster if False)
-    :param ``**kwargs``: keyword args passed through to ``plot_date()`` or ``errorbar()``
+    :param ``**kwargs``: keyword args passed through to ``plot()`` or ``errorbar()``
 
     :rtype: ticklocs, fig, ax = tick locations, figure, and axes object.
     """
@@ -138,14 +138,14 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
     if ax is None:
         ax = fig.gca()
 
-    if fmt is not None:
-        kwargs.update({'fmt': fmt})
+    dates = cxctime2plotdate(times)
+    args = () if fmt is None else (fmt,)
 
     if yerr is not None or xerr is not None:
-        ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, **kwargs)
-        ax.xaxis_date(tz)
+        ax.errorbar(dates, y, yerr, xerr, *args, **kwargs)
     else:
-        ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+        ax.plot(dates, y, *args, **kwargs)
+    ax.xaxis_date(tz)
 
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
@@ -157,7 +157,7 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
 
     # If plotting interactively then show the figure and enable interactive resizing
     if interactive and hasattr(fig, 'show'):
-        fig.canvas.draw()
+        fig.canvas.draw_idle()
         ax.callbacks.connect('xlim_changed', remake_ticks)
 
     return ticklocs, fig, ax
