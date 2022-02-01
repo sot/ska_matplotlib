@@ -138,14 +138,15 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
     if ax is None:
         ax = fig.gca()
 
-    if fmt is not None:
-        kwargs.update({'fmt': fmt})
-
     if yerr is not None or xerr is not None:
+        if fmt is not None:
+            kwargs.update({'fmt': fmt})
         ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, **kwargs)
         ax.xaxis_date(tz)
     else:
-        ax.plot_date(cxctime2plotdate(times), y, **kwargs)
+        if fmt is None:
+            fmt = ''
+        ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
 
     ticklocs = set_time_ticks(ax)
     fig.autofmt_xdate()
