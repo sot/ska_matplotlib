@@ -144,6 +144,9 @@ def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz
         ax.errorbar(cxctime2plotdate(times), y, yerr=yerr, xerr=xerr, **kwargs)
         ax.xaxis_date(tz)
     else:
+
+        # If fmt is None override with fmt='' for plot_date(). The plot_date()
+        # default of 'o' is undesireable.
         if fmt is None:
             fmt = ''
         ax.plot_date(cxctime2plotdate(times), y, fmt=fmt, **kwargs)
