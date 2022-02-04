@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ska.Matplotlib &#8212; Ska.Matplotlib 0.1.dev1+gc591844 documentation</title>
+    <title>Ska.Matplotlib &#8212; Ska.Matplotlib 3.14.1 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-astropy.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -47,7 +47,7 @@
     <h3>Navigation</h3>
     <ul>
       <li>
-	<a href="#">Ska.Matplotlib 0.1.dev1+gc591844 documentation</a>
+	<a href="#">Ska.Matplotlib 3.14.1 documentation</a>
 	 &#187;
       </li>
       
@@ -104,14 +104,14 @@ require issuing a plt.draw() or fig.canvas.draw() command at the end.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>times</strong> – CXC time values for x-axis (DateTime compatible format, CxoTime)</p></li>
 <li><p><strong>y</strong> – y values</p></li>
-<li><p><strong>fmt</strong> – plot format (not used by default, matplotlib will use its default)</p></li>
+<li><p><strong>fmt</strong> – plot format (default None)</p></li>
 <li><p><strong>fig</strong> – pyplot figure object (optional)</p></li>
 <li><p><strong>yerr</strong> – error on y values, may be [ scalar | N, Nx1, or 2xN array-like ]</p></li>
 <li><p><strong>xerr</strong> – error on x values in units of DAYS (may be [ scalar | N, Nx1, or 2xN array-like ] )</p></li>
 <li><p><strong>tz</strong> – timezone string</p></li>
 <li><p><strong>state_codes</strong> – list of (raw_count, state_code) tuples</p></li>
 <li><p><strong>interactive</strong> – use plot interactively (default=True, faster if False)</p></li>
-<li><p><strong>**kwargs</strong> – keyword args passed through to <code class="docutils literal notranslate"><span class="pre">plot_date()</span></code> or <code class="docutils literal notranslate"><span class="pre">errorbar()</span></code></p></li>
+<li><p><strong>**kwargs</strong> – keyword args passed through to <code class="docutils literal notranslate"><span class="pre">plot()</span></code> or <code class="docutils literal notranslate"><span class="pre">errorbar()</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
