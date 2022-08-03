@@ -94,7 +94,7 @@ def remake_ticks(ax):
     is pressed then set the date ticks to the maximum possible range.
     """
     ticklocs = set_time_ticks(ax)
-    ax.figure.canvas.draw()
+    ax.figure.canvas.draw_idle()
 
 def plot_cxctime(times, y, fmt=None, fig=None, ax=None, yerr=None, xerr=None, tz=None,
                  state_codes=None, interactive=True, **kwargs):
