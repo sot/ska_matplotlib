@@ -273,6 +273,7 @@ def set_min_axis_range(ax, min_range, axis='y'):
     get_lim = getattr(ax, f'get_{axis}lim')
 
     lim0, lim1 = get_lim()
-    if lim1 - lim0 < min_range:
+    if abs(lim1 - lim0) < min_range:
         lim_mean = (lim0 + lim1) / 2
-        set_lim(lim_mean - min_range / 2, lim_mean + min_range / 2)
+        sign = 1 if lim1 > lim0 else -1
+        set_lim(lim_mean - sign * min_range / 2, lim_mean + sign * min_range / 2)
