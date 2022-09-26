@@ -259,3 +259,21 @@ def hist_outline(dataIn, *args, **kwargs):
     return (bins, data)
 
 
+def set_min_axis_range(ax, min_range, axis='y'):
+    """
+    Set the minimum range of the y- or x-axis limits of a matplotlib Axes object.
+
+    This is used to prevent the axis limits from being set to a very small range.
+
+    :param ax: matplotlib Axes object
+    :param min_range: minimum range of the axis
+    :param axis: axis to set (default 'y', also allowed 'x')
+    """
+    set_lim = getattr(ax, f'set_{axis}lim')
+    get_lim = getattr(ax, f'get_{axis}lim')
+
+    lim0, lim1 = get_lim()
+    if abs(lim1 - lim0) < min_range:
+        lim_mean = (lim0 + lim1) / 2
+        sign = 1 if lim1 > lim0 else -1
+        set_lim(lim_mean - sign * min_range / 2, lim_mean + sign * min_range / 2)
