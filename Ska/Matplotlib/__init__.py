@@ -3,4 +3,4 @@ import ska_helpers
 
 from .core import *
 
-__version__ = ska_helpers.get_version('Ska.Matplotlib')
+__version__ = ska_helpers.get_version('ska_matplotlib')

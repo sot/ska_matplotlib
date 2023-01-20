@@ -3,7 +3,7 @@
 
 import numpy as np
 from matplotlib import pylab
-from Ska.Matplotlib import hist_outline
+from ska_matplotlib import hist_outline
 
 if __name__ == "__main__":
     binsIn = np.arange(0, 1, 0.1)

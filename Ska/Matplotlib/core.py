@@ -203,7 +203,7 @@ def pointpair(x, y=None):
 
     Example::
 
-      from Ska.Matplotlib import pointpair
+      from ska_matplotlib import pointpair
       x = np.arange(1, 100, 5)
       x0 = x[:-1]
       x1 = x[1:]

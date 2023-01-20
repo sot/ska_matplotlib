@@ -5,8 +5,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import numpy as np
-from Ska.Matplotlib import plot_cxctime, cxctime2plotdate
-from Ska.Matplotlib.lineid_plot import plot_line_ids
+from ska_matplotlib import plot_cxctime, cxctime2plotdate
+from ska_matplotlib.lineid_plot import plot_line_ids
 import pytest
 
 np.random.seed(1)
