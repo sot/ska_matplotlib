@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Ska.Matplotlib documentation build configuration file, created by
+# ska_matplotlib documentation build configuration file, created by
 # sphinx-quickstart on Tue May 19 15:46:11 2020.
 #
 # This file is execfile()d with the current directory set to its
@@ -20,7 +20,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
-from Ska.Matplotlib import __version__
+from ska_matplotlib import __version__
 
 # -- General configuration ------------------------------------------------
 
@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Ska.Matplotlib'
+project = 'ska_matplotlib'
 copyright = '2020, Tom Aldcroft'
 author = 'Tom Aldcroft'
 
@@ -89,8 +89,8 @@ todo_include_todos = False
 html_theme = 'bootstrap-ska'
 html_theme_options = {
     'logotext1': 'Ska! ',        # white,  semi-bold
-    'logotext2': 'Ska',      # orange, light
-    'logotext3': '.Matplotlib',        # white,  light
+    'logotext2': 'ska_matplotlib',      # orange, light
+    'logotext3': '',        # white,  light
     'homepage_url': 'https://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc',
     'homepage_text': 'ska',
     'homepage_text_2': 'tools'
@@ -153,7 +153,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'SkaMatplotlib.tex', 'Ska.Matplotlib Documentation',
+    (master_doc, 'SkaMatplotlib.tex', 'ska_matplotlib Documentation',
      'Tom Aldcroft', 'manual'),
 ]
 
@@ -163,7 +163,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'chandratime', 'Ska.Matplotlib Documentation',
+    (master_doc, 'chandratime', 'ska_matplotlib Documentation',
      [author], 1)
 ]
 
@@ -174,7 +174,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'SkaMatplotlib', 'Ska.Matplotlib Documentation',
+    (master_doc, 'SkaMatplotlib', 'ska_matplotlib Documentation',
      author, 'SkaMatplotlib', 'One line description of project.',
      'Miscellaneous'),
 ]
