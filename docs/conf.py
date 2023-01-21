@@ -89,8 +89,8 @@ todo_include_todos = False
 html_theme = 'bootstrap-ska'
 html_theme_options = {
     'logotext1': 'Ska! ',        # white,  semi-bold
-    'logotext2': 'Ska',      # orange, light
-    'logotext3': '.Matplotlib',        # white,  light
+    'logotext2': 'ska_matplotlib',      # orange, light
+    'logotext3': '',        # white,  light
     'homepage_url': 'https://cxc.cfa.harvard.edu/mta/ASPECT/tool_doc',
     'homepage_text': 'ska',
     'homepage_text_2': 'tools'
