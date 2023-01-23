@@ -1,7 +1,7 @@
-:mod:`Ska.Matplotlib`
+:mod:`ska_matplotlib`
 ===========================
 
-.. automodule:: Ska.Matplotlib
+.. automodule:: ska_matplotlib
 
 Functions
 ----------
