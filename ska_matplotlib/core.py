@@ -168,6 +168,9 @@ def cxctime2plotdate(times):
     Convert input CXC time (sec) to the time base required for the matplotlib
     plot_date function (days since start of year 1).
 
+    For new code, do not use cxctime2plotdate and instead use the plot_date
+    Time format from cxotime.CxoTime with ``CxoTime(times).plot_date``.
+
     :param times: times (any DateTime compatible format or object)
     :rtype: plot_date times
     """
