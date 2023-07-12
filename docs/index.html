@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ska_matplotlib &#8212; ska_matplotlib 4.0.0 documentation</title>
+    <title>ska_matplotlib &#8212; ska_matplotlib 4.0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-astropy.css" />
     
@@ -47,7 +47,7 @@
     <h3>Navigation</h3>
     <ul>
       <li>
-	<a href="#">ska_matplotlib 4.0.0 documentation</a>
+	<a href="#">ska_matplotlib 4.0.1 documentation</a>
 	 &#187;
       </li>
       
@@ -70,6 +70,8 @@
 <span class="sig-prename descclassname"><span class="pre">ska_matplotlib.</span></span><span class="sig-name descname"><span class="pre">cxctime2plotdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ska_matplotlib/core.html#cxctime2plotdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ska_matplotlib.cxctime2plotdate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert input CXC time (sec) to the time base required for the matplotlib
 plot_date function (days since start of year 1).</p>
+<p>For new code, do not use cxctime2plotdate and instead use the plot_date
+Time format from cxotime.CxoTime with <code class="docutils literal notranslate"><span class="pre">CxoTime(times).plot_date</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>times</strong> – times (any DateTime compatible format or object)</p>
